@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var fs = require('fs');
-
+var mongods = require('./ds/mongods')
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var profile = require('./routes/profile');
@@ -26,13 +26,7 @@ app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-console.log('Connecting to Mongo...');
-mongoose.connect('mongodb://localhost/movies');
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
-  console.log('Successfully connected!');
-});
+
 
 app.use(function(req, res, next) {
     console.log("Setting headers")
