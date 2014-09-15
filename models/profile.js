@@ -18,5 +18,8 @@ var profileSchema = new Schema({
 profileSchema.statics.findById = function (id, cb) {
   this.findOne({ id: id }, cb);
 }
+profileSchema.statics.removeFavorite = function (id, favId, cb) {
+  this.update({ id: id }, {$pull: {favorites: {id: favId}}}, cb);
+}
 
 module.exports = mongoose.model('profiles', profileSchema);
