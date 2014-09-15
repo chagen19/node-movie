@@ -2,24 +2,28 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var favoriteSchema = new Schema({
-    source: String, 
-    id: String, 
-    title: String, 
-    release_date: String, 
-    poster_path: String
-});
 var profileSchema = new Schema({
     id: Number, 
-    username: String, 
-    favorites: [favoriteSchema]
+    username: String,
+    favorites: [{
+    	type: Schema.ObjectId,
+    	ref: 'favorites'
+    }]
 });
 
 profileSchema.statics.findById = function (id, cb) {
-  this.findOne({ id: id }, cb);
+  this.findOne({ id: id }).populate('favorites').exec(cb);
 }
-profileSchema.statics.removeFavorite = function (id, favId, cb) {
-  this.update({ id: id }, {$pull: {favorites: {id: favId}}}, cb);
+profileSchema.statics.addFavorite = function (profileId, favId, cb) {
+	var profileOid = mongoose.Types.ObjectId(profileId);
+	var favOid = mongoose.Types.ObjectId(favId);
+    return this.collection.update({ _id: profileOid}, { $addToSet: { favorites:  favOid}}, cb);
+}
+
+profileSchema.statics.removeFavorite = function (profileId, favId, cb) {
+	var profileOid = mongoose.Types.ObjectId(profileId);
+	var favOid = mongoose.Types.ObjectId(favId);
+ 	this.collection.update({ _id: profileOid }, {$pull: {favorites: favOid}}, cb);
 }
 
 module.exports = mongoose.model('profiles', profileSchema);
