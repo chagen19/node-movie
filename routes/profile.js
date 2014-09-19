@@ -17,7 +17,6 @@ router.put('/:id', function(req, res) {
 	console.log("Adding to favorites" + req.body.source);
 	var fav = req.body;
     profileService.addFavorite(req.params.id, fav, function(err, data) {
-        console.log("FavoriteID: " + data.id)
     	res.status(200).send();
     });
 });

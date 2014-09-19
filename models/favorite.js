@@ -16,7 +16,7 @@ var favoriteSchema = new Schema({
 
 favoriteSchema.statics.addFavorite = function (profileId, fav, cb) {
     var oid = mongoose.Types.ObjectId(profileId);
-    console.log("Progile " + profileId + ":" + fav.source + ":" + fav.id + ":" + fav.release_date + ":" + fav.poster_path )
+    console.log("Profile " + profileId + ":" + fav.source + ":" + fav.id + ":" + fav.release_date + ":" + fav.poster_path )
     return this.collection.findAndModify({ source: fav.source, id: fav.id, title: fav.title, release_date: fav.release_date, poster_path: fav.poster_path }, [], { $addToSet: { profiles: oid }}, {upsert: true, new: true}, cb);
 };
 
