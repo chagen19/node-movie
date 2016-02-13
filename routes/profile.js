@@ -20,9 +20,15 @@ router.put('/:id', function(req, res) {
     	res.status(200).send();
     });
 });
-router.delete('/:id/favorite/:favId', function(req, res) {
+router.get('/:id/favorite/:movieId', function(req, res) {
+    var movieId = Number(req.params.movieId);
+    profileService.isFavorite(req.params.id, movieId, function(err, data) {
+        res.status(200).send({isFavorite: data});
+    });
+});
+router.delete('/:id/favorite/:favOId', function(req, res) {
     console.log("Deleting from favorites");
-    profileService.removeFavorite(req.params.id, req.params.favId, function(err, data) {
+    profileService.removeFavorite(req.params.id, req.params.favOId, function(err, data) {
         res.status(200).end();
     });
 });

@@ -28,19 +28,37 @@ module.exports = {
 		});
 		
 	},
-	addFavorite : function(profileId, fav, cb) {
-		console.log("Adding favorite: " + fav.title);
-		Favorite.addFavorite(profileId, fav, function(err, data) {
+	addFavorite : function(profileOId, movie, cb) {
+		console.log("Adding favorite: " + movie.title);
+		Favorite.addFavorite(profileOId, movie, function(err, data) {
 			if (err) throw err;
-			 Profile.addFavorite(profileId, data._id, callback(cb));	
+			 Profile.addFavorite(profileOId, data._id, callback(cb));
 		});
 	},
-	removeFavorite : function(profileId, favId, cb) {
-		console.log("Removing Favorite: " + favId);
-		Profile.removeFavorite(profileId, favId, function(err, data) {
+	isFavorite : function(profileOId, movieId, cb) {
+		console.log("Checking if movie " + movieId + " is a favorite for profile " + profileOId);
+		Profile.findByOId(profileOId, function(err, data) {
+			console.log("Data is " + data);
 			if (err) throw err;
-			console.log("REmoved form prodile");
-			Favorite.removeFavorite(profileId, favId, callback(cb));
+			var favs = data ? data.favorites : [];
+			for (var i = 0, len = favs.length; i < len; i++) {
+				console.log("checking");
+				if(favs[i].id == movieId) {
+					console.log("Yes it's true");
+					cb(err, true);
+					return;
+				}
+			}
+			cb(err, false);
+			return;
+		});
+	},
+	removeFavorite : function(profileOId, favOId, cb) {
+		console.log("Removing Favorite: " + favOId);
+		Profile.removeFavorite(profileOId, favOId, function(err, data) {
+			if (err) throw err;
+			console.log("Removed form profile");
+			Favorite.removeFavorite(profileOId, favOId, callback(cb));
 		});
 		
 	}

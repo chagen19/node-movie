@@ -14,15 +14,20 @@ var profileSchema = new Schema({
 profileSchema.statics.findById = function (id, cb) {
   this.findOne({ id: id }).populate('favorites').exec(cb);
 }
-profileSchema.statics.addFavorite = function (profileId, favId, cb) {
-	var profileOid = mongoose.Types.ObjectId(profileId);
-	var favOid = mongoose.Types.ObjectId(favId);
-    return this.collection.update({ _id: profileOid}, { $addToSet: { favorites:  favOid}}, cb);
+
+profileSchema.statics.findByOId = function (profileOid, cb) {
+    profileOid = mongoose.Types.ObjectId(profileOid);
+    this.findOne({ _id: profileOid }).populate('favorites').exec(cb);
+}
+profileSchema.statics.addFavorite = function (profileOid, favOId, cb) {
+	profileOid = mongoose.Types.ObjectId(profileOid);
+	favOid = mongoose.Types.ObjectId(favOId);
+    this.collection.update({ _id: profileOid}, { $addToSet: { favorites:  favOid}}, cb);
 }
 
-profileSchema.statics.removeFavorite = function (profileId, favId, cb) {
-	var profileOid = mongoose.Types.ObjectId(profileId);
-	var favOid = mongoose.Types.ObjectId(favId);
+profileSchema.statics.removeFavorite = function (profileOid, favOId, cb) {
+	profileOid = mongoose.Types.ObjectId(profileOid);
+	favOid = mongoose.Types.ObjectId(favOId);
  	this.collection.update({ _id: profileOid }, {$pull: {favorites: favOid}}, cb);
 }
 

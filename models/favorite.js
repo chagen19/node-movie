@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 var favoriteSchema = new Schema({
     source: String, 
-    id: String, 
+    id: Number, 
     title: String, 
     release_date: String, 
     poster_path: String,
@@ -13,16 +13,15 @@ var favoriteSchema = new Schema({
     	ref: 'profiles'
     }]
 });
-
-favoriteSchema.statics.addFavorite = function (profileId, fav, cb) {
-    var oid = mongoose.Types.ObjectId(profileId);
-    console.log("Profile " + profileId + ":" + fav.source + ":" + fav.id + ":" + fav.release_date + ":" + fav.poster_path )
-    return this.collection.findAndModify({ source: fav.source, id: fav.id, title: fav.title, release_date: fav.release_date, poster_path: fav.poster_path }, [], { $addToSet: { profiles: oid }}, {upsert: true, new: true}, cb);
+favoriteSchema.statics.addFavorite = function (profileOId, movie, cb) {
+    var oid = mongoose.Types.ObjectId(profileOId);
+    console.log("Profile " + profileOId + ":" + movie.source + ":" + movie.id + ":" + movie.release_date + ":" + movie.poster_path )
+    return this.collection.findAndModify({ source: movie.source, id: movie.id, title: movie.title, release_date: movie.release_date, poster_path: movie.poster_path }, [], { $addToSet: { profiles: oid }}, {upsert: true, new: true}, cb);
 };
 
-favoriteSchema.statics.removeFavorite = function (profileId, favId, cb) {
-    var profileOid = mongoose.Types.ObjectId(profileId);
-    var favOid = mongoose.Types.ObjectId(favId);
+favoriteSchema.statics.removeFavorite = function (profileOid, favOid, cb) {
+    profileOid = mongoose.Types.ObjectId(profileOid);
+    favOid = mongoose.Types.ObjectId(favOid);
     this.collection.update({ _id: favOid }, {$pull: {profiles: profileOid}}, cb);
 }
 
